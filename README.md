@@ -11,7 +11,7 @@ Yup, it's real.
 Building is just like any Rojo project.
 
 ```bash
-  rojo build -o "Commander.rbxlx"
+  rojo build -o "Commander.rbxmx"
 ```
 
 
