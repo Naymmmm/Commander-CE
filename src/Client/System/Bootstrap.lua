@@ -7,8 +7,9 @@ local Parameters = {
 
 local self = {}
 
-    function self.Init(Parameters)
         
+    function self.Init(Parameters)
+        Window(Parameters)
     end
 
 return self
