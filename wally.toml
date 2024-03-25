@@ -1,0 +1,14 @@
+[package]
+name = "naymmm/commander-ce"
+description = "Open source administration system"
+version = "0.1.0"
+license = "MIT"
+authors = ["nanako <nanako@kotera.7kayoh.net>", "ben <ben@kotera.7kayoh.net>", "himawari <himawari@kotera.7kayoh.net>"]
+
+# Connect to the internal VPN before using Wally. The registry below points to an internal Git server. IGNORE
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Fusion = "elttob/fusion@0.1.1-beta"
+Koute = "7kayoh/koute@1.0.2"

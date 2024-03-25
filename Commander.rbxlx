@@ -1,0 +1,806 @@
+<roblox version="4">
+  <Item class="Lighting" referent="0">
+    <Properties>
+      <string name="Name">Lighting</string>
+      <Color3 name="Ambient">
+        <R>0</R>
+        <G>0</G>
+        <B>0</B>
+      </Color3>
+      <float name="Brightness">2</float>
+      <bool name="GlobalShadows">true</bool>
+      <bool name="Outlines">false</bool>
+      <token name="Technology">1</token>
+    </Properties>
+  </Item>
+  <Item class="ReplicatedStorage" referent="1">
+    <Properties>
+      <string name="Name">ReplicatedStorage</string>
+    </Properties>
+    <Item class="Folder" referent="2">
+      <Properties>
+        <string name="Name">Packages</string>
+      </Properties>
+      <Item class="ModuleScript" referent="3">
+        <Properties>
+          <string name="Name">Commander</string>
+          <string name="Source">return {
+	
+}</string>
+        </Properties>
+        <Item class="Folder" referent="4">
+          <Properties>
+            <string name="Name">Client</string>
+          </Properties>
+          <Item class="Folder" referent="5">
+            <Properties>
+              <string name="Name">UI</string>
+            </Properties>
+            <Item class="ModuleScript" referent="6">
+              <Properties>
+                <string name="Name">Header</string>
+                <string name="Source">local UI = script.Parent
+local CommanderPkg = script.Parent.Parent.Parent
+local Packages = CommanderPkg.Parent
+
+local Fusion = require(Packages.Fusion)
+local ThemeProvider = require(UI.ThemeProvider)
+
+local New = Fusion.New
+local Children = Fusion.Children
+
+return function(params)
+    return New "Frame" {
+        BackgroundColor3 = ThemeProvider.Color.HeaderBackground,
+        BackgroundTransparency = 0,
+        BorderSizePixel = 0,
+        Size = UDim2.new(1, 0, 0, 40),
+        ZIndex = params.ZIndex or 0,
+
+        [Children] = {
+            New "UIStroke" {
+                Color = ThemeProvider.Color.Separator,
+                Thickness = 2,
+            },
+
+            New "Frame" {
+                BackgroundTransparency = 1,
+                Size = UDim2.fromScale(1, 1),
+
+                [Children] = {
+                    New "UIListLayout" {
+                        Padding = UDim.new(0, 1),
+                        FillDirection = Enum.FillDirection.Horizontal,
+                        HorizontalAlignment = Enum.HorizontalAlignment.Right,
+                        SortOrder = Enum.SortOrder.LayoutOrder,
+                    },
+
+                    params.Right[Children],
+                }
+            },
+
+            New "Frame" {
+                BackgroundTransparency = 1,
+                Size = UDim2.fromScale(1, 1),
+
+                [Children] = {
+                    New "UIListLayout" {
+                        Padding = UDim.new(0, 1),
+                        FillDirection = Enum.FillDirection.Horizontal,
+                        SortOrder = Enum.SortOrder.LayoutOrder,
+                    },
+
+                    params.Left[Children],
+                }
+            },
+        }
+    }
+end</string>
+              </Properties>
+              <Item class="ModuleScript" referent="7">
+                <Properties>
+                  <string name="Name">HeaderItem</string>
+                  <string name="Source">local UI = script.Parent.Parent
+local CommanderPkg = script.Parent.Parent.Parent.Parent
+local Packages = CommanderPkg.Parent
+
+local Fusion = require(Packages.Fusion)
+local ThemeProvider = require(UI.ThemeProvider)
+
+local New = Fusion.New
+local Children = Fusion.Children
+local OnEvent = Fusion.OnEvent
+local State = Fusion.State
+
+return function(params)
+    local buttonTransparencyState = State(1)
+    return New "TextButton" {
+        Text = "",
+        BackgroundColor3 = Color3.new(0, 0, 0),
+        BackgroundTransparency = buttonTransparencyState,
+        Size = UDim2.fromScale(1, 1),
+        LayoutOrder = params.LayoutOrder or 0,
+        ZIndex = params.ZIndex or 0,
+
+        [Children] = {
+            New "UIAspectRatioConstraint" { },
+
+            New "ImageLabel" {
+                Image = params.Image,
+                ImageColor3 = ThemeProvider.Color.HeaderText,
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                BackgroundTransparency = 1,
+                Position = UDim2.fromScale(0.5, 0.5),
+                Size = UDim2.fromScale(0.5, 0.5),
+            },
+
+            New "UIStroke" {
+                ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+                Color = ThemeProvider.Color.Separator,
+            },
+        },
+
+        [OnEvent "MouseEnter"] = function()
+            buttonTransparencyState:set(0.95)
+        end,
+
+        [OnEvent "MouseLeave"] = function()
+            buttonTransparencyState:set(1)
+        end,
+
+        [OnEvent "MouseButton1Down"] = function()
+            buttonTransparencyState:set(0.85)
+        end,
+
+        [OnEvent "MouseButton1Click"] = function()
+            buttonTransparencyState:set(1)
+            if params.OnClick then params.OnClick() end
+        end,
+    }
+end</string>
+                </Properties>
+              </Item>
+            </Item>
+            <Item class="ModuleScript" referent="8">
+              <Properties>
+                <string name="Name">Table</string>
+                <string name="Source">local UI = script.Parent
+local CommanderPkg = script.Parent.Parent.Parent
+local Packages = CommanderPkg.Parent
+
+local Fusion = require(Packages.Fusion)
+local ThemeProvider = require(UI.ThemeProvider)
+
+local New = Fusion.New
+local Children = Fusion.Children
+local Computed = Fusion.Computed
+
+return function(params)
+    return New "Frame" {
+        AutomaticSize = Enum.AutomaticSize.Y,
+        BackgroundTransparency = 1,
+        LayoutOrder = params.LayoutOrder or 0,
+        Size = UDim2.fromScale(1, 0),
+        Visible = Computed(function()
+            return next(params[Children]:get()) ~= nil
+        end),
+
+        [Children] = {
+            New "TextLabel" {
+                Font = ThemeProvider.Font.Headline.Type,
+                TextSize = ThemeProvider.Font.Headline.Size,
+                Text = params.Title,
+                TextColor3 = ThemeProvider.Color.AltAltText,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                AutomaticSize = Enum.AutomaticSize.Y,
+                Visible = Computed(function()
+                    return params.Title:get() and params.Title:get() ~= ""
+                end),
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 16),
+            },
+
+            New "UIPadding" {
+                PaddingBottom = UDim.new(0, 12),
+                PaddingLeft = UDim.new(0, 24),
+                PaddingRight = UDim.new(0, 24),
+            },
+
+            New "UIListLayout" {
+                Padding = UDim.new(0, 8),
+                SortOrder = Enum.SortOrder.LayoutOrder,
+            },
+
+            New "Frame" {
+                AutomaticSize = Enum.AutomaticSize.Y,
+                BackgroundColor3 = ThemeProvider.Color.TableBackground,
+                ClipsDescendants = true,
+                LayoutOrder = 1,
+                Size = UDim2.fromScale(1, 0),
+
+                [Children] = {
+                    New "UICorner" {
+                        CornerRadius = UDim.new(0, 6),
+                    },
+
+                    New "UIStroke" {
+                        Color = ThemeProvider.Color.Separator,
+                    },
+
+                    New "UIListLayout" {
+                        Padding = UDim.new(0, 1),
+                        SortOrder = Enum.SortOrder.LayoutOrder,
+                    },
+
+                    New "UIPadding" {
+                        PaddingTop = UDim.new(0, 1),
+                    },
+
+                    params[Children],
+                }
+            },
+        }
+    }
+end</string>
+              </Properties>
+              <Item class="ModuleScript" referent="9">
+                <Properties>
+                  <string name="Name">TableItem</string>
+                  <string name="Source">local UI = script.Parent.Parent
+local CommanderPkg = script.Parent.Parent.Parent.Parent
+local Packages = CommanderPkg.Parent
+
+local Fusion = require(Packages.Fusion)
+local ThemeProvider = require(UI.ThemeProvider)
+
+local New = Fusion.New
+local Children = Fusion.Children
+local OnEvent = Fusion.OnEvent
+local State = Fusion.State
+local Computed = Fusion.Computed
+
+local function leftTableItem(params)
+	return New "Frame" {
+		AutomaticSize = Enum.AutomaticSize.X,
+		BackgroundTransparency = 1,
+		Size = UDim2.new(0.75, 0, 0, 46),
+
+		[Children] = {
+			New "UIListLayout" {
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				VerticalAlignment = Enum.VerticalAlignment.Center,
+			},
+
+			New "UIPadding" {
+				PaddingLeft = UDim.new(0, 9),
+			},
+
+			New "TextLabel" {
+				Font = ThemeProvider.Font.Body.Type,
+				TextColor3 = ThemeProvider.Color.MainText,
+				TextSize = ThemeProvider.Font.Body.Size,
+				TextWrapped = true,
+				Text = params.Title,
+				TextXAlignment = Enum.TextXAlignment.Left,
+				AutomaticSize = Enum.AutomaticSize.X,
+				BackgroundTransparency = 1,
+				Size = UDim2.new(1, 0, 0, 14),
+			},
+
+			New "TextLabel" {
+				Font = ThemeProvider.Font.Subheadline.Type,
+				TextColor3 = ThemeProvider.Color.AltText,
+				TextSize = ThemeProvider.Subheadline.Size,
+				TextWrapped = true,
+				Text = params.Description,
+				Visible = Computed(function()
+					return params.Description:get() and params.Description:get() ~= ""
+				end),
+				TextXAlignment = Enum.TextXAlignment.Left,
+				AutomaticSize = Enum.AutomaticSize.Y,
+				BackgroundTransparency = 1,
+				LayoutOrder = 1,
+				Size = UDim2.new(1, 0, 0, 14),
+			}
+		}
+	}
+end
+
+local function rightTableItem(params)
+	return New "Frame" {
+		BackgroundTransparency = 1,
+		Size = UDim2.new(0.25, 0, 0, 46),
+
+		[Children] = {
+			New "UIListLayout" {
+				FillDirection = Enum.FillDirection.Horizontal,
+				HorizontalAlignment = Enum.HorizontalAlignment.Right,
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				VerticalAlignment = Enum.VerticalAlignment.Center,
+			},
+
+			New "UIPadding" {
+				PaddingRight = UDim.new(0, 9),
+			},
+
+			params[Children],
+		}
+	}
+end
+
+return function(params)
+	local buttonTransparencyState = State(1)
+	return New "TextButton" {
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundColor3 = Color3.new(0, 0, 0),
+		BackgroundTransparency = buttonTransparencyState,
+		Text = "",
+		LayoutOrder = params.LayoutOrder or 1,
+		Size = UDim2.new(1, 0, 0, 46),
+
+		[Children] = {
+			New "Frame" {
+				BackgroundColor3 = ThemeProvider.Color.Separator,
+				BorderSizePixel = 0,
+				Position = UDim2.fromScale(0, 1),
+				Size = UDim2.new(1, 0, 0, 1),
+			},
+
+			rightTableItem(params),
+
+			leftTableItem(params),
+		},
+
+		[OnEvent "MouseEnter"] = function()
+			buttonTransparencyState:set(0.95)
+		end,
+
+		[OnEvent "MouseLeaave"] = function()
+			buttonTransparencyState:set(1)
+		end,
+
+		[OnEvent "MouseButton1Down"] = function()
+			buttonTransparencyState:set(0.85)
+		end,
+
+		[OnEvent "MouseButton1Click"] = function()
+			buttonTransparencyState:set(1)
+			if params.OnClick then params.OnClick() end
+		end,
+	}
+end</string>
+                </Properties>
+              </Item>
+            </Item>
+            <Item class="ModuleScript" referent="10">
+              <Properties>
+                <string name="Name">TextButton</string>
+                <string name="Source">local UI = script.Parent
+local CommanderPkg = script.Parent.Parent.Parent
+local Packages = CommanderPkg.Parent
+
+local Fusion = require(Packages.Fusion)
+local ThemeProvider = require(UI.ThemeProvider)
+
+local New = Fusion.New
+local Children = Fusion.Children
+local OnEvent = Fusion.OnEvent
+local State = Fusion.State
+local Computed = Fusion.Computed
+
+return function(params)
+    local buttonTransparencyState = State(1)
+    return New "TextButton" {
+        Text = "",
+        AutomaticSize = Enum.AutomaticSize.X,
+        BackgroundColor3 = ThemeProvider.Color.ButtonBackground,
+        LayoutOrder = params.LayoutOrder,
+        Size = UDim2.fromOffset(0, 38),
+
+        [Children] = {
+            New "UICorner" {
+                CornerRadius = UDim.new(0, 6),
+            },
+
+            New "UIStroke" {
+                ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+                Color = ThemeProvider.Color.Separator,
+            },
+
+            New "Frame" {
+                AutomaticSize = Enum.AutomaticSize.X,
+                BackgroundColor3 = Color3.new(0, 0, 0),
+                BackgroundTransparency = buttonTransparencyState,
+                BorderSizePixel = 0,
+                Size = UDim2.fromScale(0, 1),
+
+                [Children] = {
+                    New "UIPadding" {
+                        PaddingBottom = UDim.new(0, 12),
+                        PaddingLeft = UDim.new(0, 24),
+                        PaddingRight = UDim.new(0, 24),
+                        PaddingTop = UDim.new(0, 12),
+                    },
+
+                    New "UIListLayout" {
+                        FillDirection = Enum.FillDirection.Horizontal,
+                        SortOrder = Enum.SortOrder.LayoutOrder,
+                        VerticalAlignment = Enum.VerticalAlignment.Center,
+                    },
+
+                    New "TextLabel" {
+                        Font = ThemeProvider.Font.Body.Type,
+                        TextColor3 = ThemeProvider.Color.MainText,
+                        TextSize = ThemeProvider.Font.Body.Size,
+                        TextWrapped = true,
+                        Text = params.Title,
+                        AutomaticSize = Enum.AutomaticSize.X,
+                        BackgroundTransparency = 1,
+                        LayoutOrder = 1,
+                        Size = UDim2.fromOffset(0, 14),
+                    },
+
+                    New "ImageLabel" {
+                        Image = params.Icon,
+                        ImageColor3 = ThemeProvider.Color.MainText,
+                        BackgroundTransparency = 1,
+                        Size = UDim2.fromOffset(18, 18),
+                        Visible = Computed(function()
+                            return params.Icon:get() ~= ""
+                        end),
+                    },
+
+                    New "UICorner" {
+                        CornerRadius = UDim.new(0, 6),
+                    },
+                }
+            }
+        },
+
+        [OnEvent "MouseEnter"] = function()
+            buttonTransparencyState:set(0.95)
+        end,
+
+        [OnEvent "MouseLeaave"] = function()
+            buttonTransparencyState:set(1)
+        end,
+
+        [OnEvent "MouseButton1Down"] = function()
+            buttonTransparencyState:set(0.85)
+        end,
+
+        [OnEvent "MouseButton1Click"] = function()
+            buttonTransparencyState:set(1)
+            if params.OnClick then params.OnClick() end
+        end,
+    }
+end</string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="11">
+              <Properties>
+                <string name="Name">ThemeProvider</string>
+                <string name="Source">return require(script.Parent.Themes.Light) -- Actual theme switching to be done in future releases.</string>
+              </Properties>
+            </Item>
+            <Item class="Folder" referent="12">
+              <Properties>
+                <string name="Name">Themes</string>
+              </Properties>
+              <Item class="ModuleScript" referent="13">
+                <Properties>
+                  <string name="Name">Light</string>
+                  <string name="Source">return {
+	Color = {
+	    WindowControlBackground = Color3.fromRGB(230, 230, 230),
+		MainBackground = Color3.fromRGB(245, 245, 245),
+		TableBackground = Color3.fromRGB(255, 255, 255),
+		DangerBackground = Color3.fromRGB(252, 33, 37),
+		HeaderBackground = Color3.fromRGB(250, 250, 250),
+		ButtonBackground = Color3.fromRGB(255, 255, 255),
+		MenuBackground = Color3.fromRGB(255, 255, 255),
+		Separator = Color3.fromRGB(200, 200, 200),
+
+		MainText = Color3.fromRGB(0, 0, 0),
+		AltText = Color3.fromRGB(100, 100, 100),
+		AltAltText = Color3.fromRGB(150, 150, 150),
+		DangerText = Color3.fromRGB(215, 28, 31),
+		SelectedText = Color3.fromRGB(255, 255, 255),
+		HeaderText = Color3.fromRGB(150, 150, 150),
+	},
+
+	["Font"] = {
+		Heading1 = {
+			Type = Enum.Font.GothamBold,
+			Size = 24,
+		},
+		Heading2 = {
+			Type = Enum.Font.GothamSemibold,
+			Size = 20,
+		},
+		FootnoteText = {
+			Type = Enum.Font.Gotham,
+			Size = 14,
+		},
+		Body = {
+			Type = Enum.Font.GothamSemibold,
+			Size = 14,
+		},
+		Headline = {
+			Type = Enum.Font.GothamBold,
+			Size = 14,
+		},
+		Subheadline = {
+			Type = Enum.Font.Gotham,
+			Size = 14,
+		},
+		HeaderText = {
+			Type = Enum.Font.GothamSemibold,
+			Size = 16,
+		},
+		MenuText = {
+			Type = Enum.Font.GothamSemibold,
+			Size = 16,
+		},
+	}
+}</string>
+                </Properties>
+              </Item>
+            </Item>
+            <Item class="ModuleScript" referent="14">
+              <Properties>
+                <string name="Name">Window</string>
+                <string name="Source">local UI = script.Parent
+local CommanderPkg = script.Parent.Parent.Parent
+local Packages = CommanderPkg.Parent
+
+local Fusion = require(Packages.Fusion)
+local ThemeProvider = require(UI.ThemeProvider)
+
+local New = Fusion.New
+local Children = Fusion.Children
+
+local function windowControl(params)
+    return New "Frame" {
+        BackgroundColor3 = ThemeProvider.Color.WindowControlBackground,
+        BorderSizePixel = 0,
+        Size = UDim2.new(1, 0, 0, 32),
+
+        [Children] = {
+            New "UIStroke" {
+                Color = ThemeProvider.Color.Separator,
+            },
+
+            New "UIPadding" {
+                PaddingTop = UDim.new(0, 1),
+            },
+
+            New "TextLabel" {
+                BackgroundTransparency = 1,
+                Text = params.Title or "Window",
+                Font = ThemeProvider.Font.Headline.Type,
+                TextSize = ThemeProvider.Font.Headline.Size,
+                TextColor3 = ThemeProvider.Color.AltText,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Size = UDim2.fromScale(0, 1),
+                Position = UDim2.fromOffset(9, 0),
+            },
+
+            New "TextButton" {
+                BackgroundTransparency = 1,
+                Text = "",
+                AnchorPoint = Vector2.new(1, 0),
+                Size = UDim2.fromScale(1, 1),
+                Position = UDim2.fromScale(1, 0),
+
+                [Children] = {
+                    New "ImageLabel" {
+                        BackgroundTransparency = 1,
+                        Image = "rbxassetid://10747384394",
+                        ImageColor3 = ThemeProvider.Color.AltText,
+                        AnchorPoint = Vector2.new(0.5, 0.5),
+                        Size = UDim2.fromScale(0.6, 0.6),
+                        Position = UDim2.fromScale(0.5, 0.5),
+                    },
+
+                    New "UIAspectRatioConstraint" {
+                        AspectRatio = 1,
+                    },
+                },
+            },
+
+            New "TextButton" {
+                Text = "",
+                AnchorPoint = Vector2.new(0.5, 0),
+                BackgroundTransparency = 1,
+                Position = UDim2.fromScale(0.5, 0),
+                Size = UDim2.fromScale(0.15, 1),
+
+                [Children] = {
+                    New "ImageButton" {
+                        Image = "rbxassetid://2935604064",
+                        ImageColor3 = ThemeProvider.Color.AltAltText,
+                        ScaleType = Enum.ScaleType.Slice,
+                        SliceCenter = Rect.new(256, 256, 256, 256),
+                        AnchorPoint = Vector2.new(0, 0.5),
+                        BackgroundTransparency = 1,
+                        Position = UDim2.fromScale(0, 0.5),
+                        Size = UDim2.new(1, 0, 0, 2),
+                    },
+                },
+            },
+        }
+    }
+end
+
+return function(params)
+	return New "CanvasGroup" {
+		GroupTransparency = params.GroupTransparency,
+		BackgroundColor3 = ThemeProvider.Color.MainBackground,
+		BorderSizePixel = 0,
+		Size = UDim2.fromScale(1, 1),
+		Parent = params.Parent,
+
+		[Children] = {
+			New "UICorner" {
+				CornerRadius = UDim.new(0, 6),
+			},
+
+			New "UIStroke" {
+				Color = Color3.new(0, 0, 0),
+				Thickness = 2,
+				Transparency = 0.8,
+			},
+
+			New "UISizeConstraint" {
+				MinSize = params.MinSize or Vector2.new(450, 300)
+			},
+
+			New "UIAspectRatioConstraint" {
+				AspectRatio = params.AspectRatio or 1.3,
+				AspectType = Enum.AspectType.ScaleWithParentSize,
+				DominantAxis = Enum.DominantAxis.Height,
+			},
+
+			windowControl {
+
+            },
+
+            New "Frame" {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 1, -32),
+                Position = UDim2.fromOffset(0, 32),
+
+                [Children] = params[Children]
+            }
+		},
+	}
+end</string>
+              </Properties>
+            </Item>
+            <Item class="ModuleScript" referent="15">
+              <Properties>
+                <string name="Name">Window.story</string>
+                <string name="Source">local UI = script.Parent
+local CommanderPkg = script.Parent.Parent.Parent
+local Packages = CommanderPkg.Parent
+
+local Fusion = require(Packages.Fusion)
+local ThemeProvider = require(UI.ThemeProvider)
+
+local New = Fusion.New
+local Children = Fusion.Children
+
+local component = require(script.Parent.Window)
+local headerComp = require(script.Parent.Header)
+local headerItemComp = require(script.Parent.Header.HeaderItem)
+
+return function(target)
+    local newComp = component {
+        Parent = target,
+
+        [Children] = {
+            headerComp {
+                Left = {
+                    [Children] = {
+                        headerItemComp {
+                            Image = "rbxassetid://7734058165",
+                        }
+                    }
+                },
+                Right = {
+                    [Children] = {
+                        headerItemComp {
+                            Image = "rbxassetid://7734052925",
+                        },
+
+                        headerItemComp {
+                            LayoutOrder = 1,
+                            Image = "rbxassetid://7743876054",
+                        },
+                    }
+                },
+            }
+        }
+    }
+    
+    return function()
+        newComp:Destroy()
+    end
+end</string>
+              </Properties>
+            </Item>
+          </Item>
+        </Item>
+        <Item class="ModuleScript" referent="16">
+          <Properties>
+            <string name="Name">Server</string>
+            <string name="Source"><![CDATA[local Server = {}
+
+function Server.start()
+
+end
+
+return Server
+]]></string>
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="ServerScriptService" referent="17">
+    <Properties>
+      <string name="Name">ServerScriptService</string>
+    </Properties>
+    <Item class="Folder" referent="18">
+      <Properties>
+        <string name="Name">Tests</string>
+      </Properties>
+    </Item>
+  </Item>
+  <Item class="SoundService" referent="19">
+    <Properties>
+      <string name="Name">SoundService</string>
+      <bool name="RespectFilteringEnabled">true</bool>
+    </Properties>
+  </Item>
+  <Item class="StarterPlayer" referent="20">
+    <Properties>
+      <string name="Name">StarterPlayer</string>
+    </Properties>
+    <Item class="StarterPlayerScripts" referent="21">
+      <Properties>
+        <string name="Name">StarterPlayerScripts</string>
+      </Properties>
+      <Item class="Folder" referent="22">
+        <Properties>
+          <string name="Name">Tests</string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="Workspace" referent="23">
+    <Properties>
+      <string name="Name">Workspace</string>
+      <bool name="FilteringEnabled">true</bool>
+    </Properties>
+    <Item class="Part" referent="24">
+      <Properties>
+        <string name="Name">Baseplate</string>
+        <bool name="Anchored">true</bool>
+        <Color3uint8 name="Color3uint8">6512483</Color3uint8>
+        <bool name="Locked">true</bool>
+        <Vector3 name="Position">
+          <X>0</X>
+          <Y>-10</Y>
+          <Z>0</Z>
+        </Vector3>
+        <Vector3 name="size">
+          <X>512</X>
+          <Y>20</Y>
+          <Z>512</Z>
+        </Vector3>
+      </Properties>
+    </Item>
+  </Item>
+</roblox>
