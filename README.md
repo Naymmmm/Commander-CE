@@ -17,7 +17,6 @@ Building is just like any Rojo project.
 
 ## Contributing
 
-Contributions are always welcome!
-
-TODO
+Go ahead! Help us!
+Be sure to follow the [Github Code of Conduct](https://docs.github.com/en/site-policy/github-terms/github-community-code-of-conduct)!
 
