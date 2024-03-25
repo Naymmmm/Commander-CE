@@ -15,7 +15,11 @@
 
     "ServerScriptService": {
       "Tests": {
-        "$path": "Tests/Server"
+        "$path": "Tests/Server",
+
+        "CommanderServer": {
+          "$path": "server"
+        }
       }
     },
 
